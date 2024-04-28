@@ -23,7 +23,7 @@
    - Implement JWT-based authentication.
 
 4. **Version Control and Collaboration:**
-   - Set up Git repository on GitHub.
+   - ~~Set up Git repository on GitHub.~~
    - Divide tasks among team members.
    - Create separate branches for contributions.
    - Conduct regular merges and code reviews.
