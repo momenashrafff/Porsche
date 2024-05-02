@@ -2,17 +2,22 @@
 
 ## MongoDB Version
 - 7.0.x
+
 ## npm version
 - 10.5.X
+
 ## node version
 - 21.7.x
+
 ## Before you start working on the project 
 - Install mongoose
    -```npm i mongoose```
 - Install nodemon (Hot Reload for javascript)
    -```npm i --save-dev nodemon```
+
 ## To run the project for testing
 - ```npm run devStart```
+
 ## File Structure
 - server (back-end)
   - models
@@ -39,4 +44,4 @@
    - ~~Set up Git repository on GitHub.~~
    - Divide tasks among team members.
    - Create separate branches for contributions.
-   - Conduct regular merges and code reviews.
+   - Conduct regular merges and code reviews
