@@ -8,6 +8,8 @@
    -``` npm i mongoose```
 - Install nodemon (Hot Reload for javascript)
    -``` npm i --save-dev nodemon```
+## To run the project for testing
+- ``` npm run devStart```
 ## File Structure
 - server (back-end)
   - models
