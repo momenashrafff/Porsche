@@ -132,5 +132,21 @@ async function displayUsers() {
     }
 }
 
-run();
-displayUsers();
+const express = require('express');
+const app = express();
+const PORT = 3000; // Change the port number
+
+app.use(express.json());
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
+
+app.get("/",async (request, response) => {
+    const admins = await Admin.find();
+    const customers = await Customer.find();
+    const products = await Product.find();
+    const orders = await Order.find();
+    response.json({ admins, customers, products, orders });
+
+});
