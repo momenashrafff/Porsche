@@ -5,11 +5,11 @@
 
 ## Before you start working on the project 
 - Install mongoose
-   -``` npm i mongoose```
+   -```npm i mongoose```
 - Install nodemon (Hot Reload for javascript)
-   -``` npm i --save-dev nodemon```
+   -```npm i --save-dev nodemon```
 ## To run the project for testing
-- ``` npm run devStart```
+- ```npm run devStart```
 ## File Structure
 - server (back-end)
   - models
@@ -18,12 +18,12 @@
 ## To-Do List
 
 1. **Database Design:**
-   - Identify key entities and attributes.
-   - Determine entity relationships.
-   - Create ERD using Lucidchart or similar tool.
+   - ~~Identify key entities and attribute~~.
+   - ~~Determine entity relationship~~.
+   - ~~Create ERD using Draw.io~~.
 
 2. **Database Implementation:**
-   - Write MongoDB code for collections.
+   - ~~Write MongoDB code for collections~~.
    - Ensure design meets ecommerce data requirements.
 
 3. **Backend API Development:**
