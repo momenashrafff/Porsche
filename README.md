@@ -2,7 +2,10 @@
 
 ## MongoDB Version
 - 7.0.x
-
+## npm version
+- 10.5.X
+## node version
+- 21.7.x
 ## Before you start working on the project 
 - Install mongoose
    -```npm i mongoose```
