@@ -11,9 +11,9 @@
 
 ## Before you start working on the project 
 - Install mongoose
-   -```npm i mongoose```
+   - ```npm i mongoose```
 - Install nodemon (Hot Reload for javascript)
-   -```npm i --save-dev nodemon```
+   - ```npm i --save-dev nodemon```
 
 ## To run the project for testing
 - ```npm run devStart```
