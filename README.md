@@ -27,7 +27,7 @@
 
 2. **Database Implementation:**
    - ~~Write MongoDB code for collections~~.
-   - Ensure design meets ecommerce data requirements.
+   - ~~Ensure design meets ecommerce data requirements~~.
 
 3. **Backend API Development:**
    - Design public and private API endpoints.
