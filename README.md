@@ -40,3 +40,5 @@
    - Divide tasks among team members.
    - Create separate branches for contributions.
    - Conduct regular merges and code reviews.
+
+adam
