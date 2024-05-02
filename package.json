@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/momenashrafff/Porsche/issues"
   },
-  "homepage": "https://github.com/momenashrafff/Porsche#readme"
+  "homepage": "https://github.com/momenashrafff/Porsche#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  },
+  "dependencies": {
+    "mongoose": "^8.3.3"
+  }
 }
