@@ -5,7 +5,9 @@
 
 ## Before you start working on the project 
 - Install mongoose
-   - ``` npm i mongoose```
+   -``` npm i mongoose```
+- Install nodemon (Hot Reload for javascript)
+   -``` npm i --save-dev nodemon```
 ## File Structure
 - server (back-end)
   - models
