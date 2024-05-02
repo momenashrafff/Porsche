@@ -1,5 +1,11 @@
 # Porsche
 
+## MongoDB Version
+- 7.0.x
+
+## Before you start working on the project 
+- Install mongoose
+   - ``` npm i mongoose```
 ## File Structure
 - server (back-end)
   - models
