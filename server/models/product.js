@@ -3,6 +3,11 @@ const Schema = mongoose.Schema;
 
 // Define the schema for the product
 const productSchema = new Schema({
+    createdBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'Admin',
+        required: true
+    },
     name: {
         type: String,
         required: true

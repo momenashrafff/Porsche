@@ -61,18 +61,21 @@ async function run() {
         // Create Porsche cars
         const porscheCarsData = [
             {
+                createdBy: newAdmin._id,
                 name: '911',
                 description: 'Red sports car',
                 price: 150000,
                 stock: 5
             },
             {
+                createdBy: newAdmin._id,
                 name: 'Taycan',
                 description: 'Electric sedan',
                 price: 120000,
                 stock: 10
             },
             {
+                createdBy: newAdmin._id,
                 name: 'Cayenne',
                 description: 'Luxury SUV',
                 price: 100000,
@@ -129,5 +132,5 @@ async function displayUsers() {
     }
 }
 
-displayUsers();
 run();
+displayUsers();
