@@ -3,12 +3,8 @@ const Schema = mongoose.Schema;
 
 // Define the schema for the product
 const productSchema = new Schema({
-    model: {
+    name: {
         type: String,
-        required: true
-    },
-    year: {
-        type: Number,
         required: true
     },
     description: {
@@ -25,7 +21,8 @@ const productSchema = new Schema({
     },
     createdAt: {
         type: Date,
-        default: Date.now
+        default: Date.now,
+        immutable: true
     }
 });
 

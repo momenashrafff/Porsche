@@ -61,22 +61,19 @@ async function run() {
         // Create Porsche cars
         const porscheCarsData = [
             {
-                model: '911',
-                year: 2022,
+                name: '911',
                 description: 'Red sports car',
                 price: 150000,
                 stock: 5
             },
             {
-                model: 'Taycan',
-                year: 2023,
+                name: 'Taycan',
                 description: 'Electric sedan',
                 price: 120000,
                 stock: 10
             },
             {
-                model: 'Cayenne',
-                year: 2021,
+                name: 'Cayenne',
                 description: 'Luxury SUV',
                 price: 100000,
                 stock: 8
@@ -119,10 +116,10 @@ async function run() {
 // display all the users in the database
 async function displayUsers() {
     try {
-        const admins = await admin.find();
+        const admins = await Admin.find();
         console.log('Admins:', admins);
 
-        const customers = await customer.find();
+        const customers = await Customer.find();
         console.log('Customers:', customers);
 
         const products = await Product.find();
@@ -132,5 +129,5 @@ async function displayUsers() {
     }
 }
 
-// displayUsers();
+displayUsers();
 run();
