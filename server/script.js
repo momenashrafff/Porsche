@@ -3,7 +3,16 @@ const Admin = require('./models/admin');
 const Customer = require('./models/customer');
 const Product = require('./models/product');
 const Order = require('./models/order');
+const express = require('express');
+const app = express();
 
+app.use(express.json());
+
+const PORT = 3000; // Change the port number
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
 
 // Connect to the database
 mongoose.connect('mongodb://localhost:27017/PorscheDB');
@@ -132,14 +141,100 @@ async function displayUsers() {
     }
 }
 
-const express = require('express');
-const app = express();
-const PORT = 3000; // Change the port number
+// Get admin by ID
+async function getAdminById(adminId) {
+    try {
+        const admin = await Admin.findById(adminId);
+        return admin;
+    } catch (error) {
+        console.error("Error fetching admin:", error);
+        throw new Error("Error fetching admin");
+    }
+}
 
-app.use(express.json());
+// Add new product
+app.post("/products", async (request, response) => {
+    try {
+        if(
+            // need better way to get admin id (createdBy attribute)
+            !request.body.createdBy ||
+            !request.body.name ||
+            !request.body.description ||
+            !request.body.price ||
+            !request.body.stock
+        ) {
+            return response.status(400).send({
+                message: "Send all required fields: admin id, name, description, price, stock"
+            });
+        }
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+        // Fetch admin by ID
+        const admin = await getAdminById(request.body.createdBy);
+        if (!admin) {
+            return response.status(404).send({ message: "Admin not found" });
+        }
+
+        const newProduct =  {
+            createdBy: admin._id,
+            name: request.body.name,
+            description: request.body.description,
+            price: request.body.price,
+            stock: request.body.stock
+        }
+        const product = await Product.create(newProduct);
+
+        return response.status(201).send(product);
+    } catch (error) {
+        console.log(error.message);
+        response.status(500).send({message: error.message})
+    }
+});
+
+// Edit product
+app.put('/products/:id', async (request, response) => {
+    try {
+        if(
+            !request.body.name ||
+            !request.body.description ||
+            !request.body.price ||
+            !request.body.stock
+        ) {
+            return response.status(400).send({
+                message: "Send all required fields: name, description, price, stock"
+            });
+        }
+
+        const { id } = request.params;
+        const result = await Product.findByIdAndUpdate(id, request.body);
+
+        if(!result) {
+            return response.status(404).json({ message: "Product not found" });
+        }
+
+        return response.status(200).json({ message: "Product updated successfully"})
+
+    } catch (error) {
+        console.log(error.message);
+        response.status(500).send({message: error.message})
+    }
+});
+
+// Delete product
+app.delete('/products/:id', async (request, response) => {
+    try {
+        const { id } = request.params;
+        const result = await Product.findByIdAndDelete(id);
+
+        if(!result) {
+            return response.status(404).json({ message: "Product not found" });
+        }
+
+        return response.status(200).send({ message: "Product deleted successfully"})
+
+    } catch (error) {
+        console.log(error.message);
+        response.status(500).send({message: error.message})
+    }
 });
 
 app.get("/",async (request, response) => {
