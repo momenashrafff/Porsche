@@ -152,8 +152,20 @@ async function getAdminById(adminId) {
     }
 }
 
+//get all products
+app.get("/products", async (req, res) => {
+    try{
+ 
+        res.status(200).send(await Product.find())
+
+    }catch(error){
+
+        res.status(404).send({message: "Product doesn't exist"})
+
+    }
+})
 // Add new product
-app.post("/products", async (request, response) => {
+app.post("/products/:id", async (request, response) => {
     try {
         if(
             // need better way to get admin id (createdBy attribute)
