@@ -1,9 +1,13 @@
+const SECRET = "801f3dbdc8a3d987717c32f1492806bc81e07532d8e5ef0478f4b7f4735812ec159c76c66e049f7510b2556564c2ce2e20ac3ec8ee0161db7de5e6686aaf4fbc"
+
 const mongoose = require('mongoose');
 const Admin = require('./models/admin');
 const Customer = require('./models/customer');
 const Product = require('./models/product');
 const Order = require('./models/order');
+const bcrypt = require('bcrypt')
 const express = require('express');
+const jwt = require('jsonwebtoken')
 const app = express();
 
 app.use(express.json());
@@ -28,118 +32,102 @@ db.once('open', () => {
 });
 
 
-async function run() {
-    try {
-        // Create an admin
-        const adminData = {
-            username: 'admin',
-            password: 'admin',
-            email: 'admin@test.com',
-            firstName: 'Admin',
-            lastName: 'User',
-        };
+// async function run() {
+//     try {
+//         // Create an admin
+//         const adminData = {
+//             username: 'admin',
+//             password: 'admin',
+//             email: 'admin@test.com',
+//             firstName: 'Admin',
+//             lastName: 'User',
+//         };
 
-        const newAdmin = await Admin.create(adminData);
-        console.log('Admin created:', newAdmin);
+//         const newAdmin = await Admin.create(adminData);
+//         console.log('Admin created:', newAdmin);
 
-        // Create customers
-        const customerData = [
-            {
-                username: 'customer1',
-                password: 'customer1',
-                email: 'customer1@test.com',
-                firstName: 'John',
-                lastName: 'Doe',
-                address: '123 Main St'
-            },
-            {
-                username: 'customer2',
-                password: 'customer2',
-                email: 'customer2@test.com',
-                firstName: 'Jane',
-                lastName: 'Smith', 
-                address: '456 Elm St'
-            }
-        ];
+//         // Create customers
+//         const customerData = [
+//             {
+//                 username: 'customer1',
+//                 password: 'customer1',
+//                 email: 'customer1@test.com',
+//                 firstName: 'John',
+//                 lastName: 'Doe',
+//                 address: '123 Main St'
+//             },
+//             {
+//                 username: 'customer2',
+//                 password: 'customer2',
+//                 email: 'customer2@test.com',
+//                 firstName: 'Jane',
+//                 lastName: 'Smith', 
+//                 address: '456 Elm St'
+//             }
+//         ];
 
-        for (let i = 0; i < customerData.length; i++) {
-            const newCustomer = await Customer.create(customerData[i]);
-            console.log('Customer created:', newCustomer);
-        }
+//         for (let i = 0; i < customerData.length; i++) {
+//             const newCustomer = await Customer.create(customerData[i]);
+//             console.log('Customer created:', newCustomer);
+//         }
 
-        // Create Porsche cars
-        const porscheCarsData = [
-            {
-                createdBy: newAdmin._id,
-                name: '911',
-                description: 'Red sports car',
-                price: 150000,
-                stock: 5
-            },
-            {
-                createdBy: newAdmin._id,
-                name: 'Taycan',
-                description: 'Electric sedan',
-                price: 120000,
-                stock: 10
-            },
-            {
-                createdBy: newAdmin._id,
-                name: 'Cayenne',
-                description: 'Luxury SUV',
-                price: 100000,
-                stock: 8
-            }
-        ];
+//         // Create Porsche cars
+//         const porscheCarsData = [
+//             {
+//                 createdBy: newAdmin._id,
+//                 name: '911',
+//                 description: 'Red sports car',
+//                 price: 150000,
+//                 stock: 5
+//             },
+//             {
+//                 createdBy: newAdmin._id,
+//                 name: 'Taycan',
+//                 description: 'Electric sedan',
+//                 price: 120000,
+//                 stock: 10
+//             },
+//             {
+//                 createdBy: newAdmin._id,
+//                 name: 'Cayenne',
+//                 description: 'Luxury SUV',
+//                 price: 100000,
+//                 stock: 8
+//             }
+//         ];
 
-        for (let i = 0; i < porscheCarsData.length; i++) {
-            const newCar = await Product.create(porscheCarsData[i]);
-            console.log('Porsche car created:', newCar);
-        }
+//         for (let i = 0; i < porscheCarsData.length; i++) {
+//             const newCar = await Product.create(porscheCarsData[i]);
+//             console.log('Porsche car created:', newCar);
+//         }
 
-        const customers = await Customer.find().limit(2);
-        const products = await Product.find().limit(3);
+//         const customers = await Customer.find().limit(2);
+//         const products = await Product.find().limit(3);
 
-        // Create orders
-        const ordersData = [
-            {
-                customer: customers[0]._id,
-                products: [products[0]._id, products[1]._id],
-                status: 'pending',
-                totalAmount: products[0].price + products[1].price 
-            },
-            {
-                customer: customers[1]._id,
-                products: [products[1]._id, products[2]._id],
-                status: 'pending',
-                totalAmount: products[1].price + products[2].price
-            }
-        ];
+//         // Create orders
+//         const ordersData = [
+//             {
+//                 customer: customers[0]._id,
+//                 products: [products[0]._id, products[1]._id],
+//                 status: 'pending',
+//                 totalAmount: products[0].price + products[1].price 
+//             },
+//             {
+//                 customer: customers[1]._id,
+//                 products: [products[1]._id, products[2]._id],
+//                 status: 'pending',
+//                 totalAmount: products[1].price + products[2].price
+//             }
+//         ];
 
-        for (let i = 0; i < ordersData.length; i++) {
-            const newOrder = await Order.create(ordersData[i]);
-            console.log('Order created:', newOrder);
-        }
-    } catch (error) {
-        console.error(error.message);
-    }
-}
-
-// display all the users in the database
-async function displayUsers() {
-    try {
-        const admins = await Admin.find();
-        console.log('Admins:', admins);
-
-        const customers = await Customer.find();
-        console.log('Customers:', customers);
-
-        const products = await Product.find();
-        console.log('Products:', products);
-    } catch (error) {
-        console.error(error.message);
-    }
-}
+//         for (let i = 0; i < ordersData.length; i++) {
+//             const newOrder = await Order.create(ordersData[i]);
+//             console.log('Order created:', newOrder);
+//         }
+//     } catch (error) {
+//         console.error(error.message);
+//     }
+// }
 
 // Get admin by ID
 async function getAdminById(adminId) {
@@ -152,40 +140,25 @@ async function getAdminById(adminId) {
     }
 }
 
-//get all products
-app.get("/products", async (req, res) => {
-    try{
- 
-        res.status(200).send(await Product.find())
-
-    }catch(error){
-
-        res.status(404).send({message: "Product doesn't exist"})
-
-    }
-})
 // Add new product
-app.post("/products/:id", async (request, response) => {
+app.post("/addProduct", authenticateAdmin, async (request, response) => {
     try {
         if(
             // need better way to get admin id (createdBy attribute)
-            !request.body.createdBy ||
             !request.body.name ||
             !request.body.description ||
             !request.body.price ||
             !request.body.stock
         ) {
             return response.status(400).send({
-                message: "Send all required fields: admin id, name, description, price, stock"
+                message: "Send all required fields: name, description, price, stock"
             });
         }
+        const admin = await Admin.findById(request.user._id)
 
-        // Fetch admin by ID
-        const admin = await getAdminById(request.body.createdBy);
-        if (!admin) {
-            return response.status(404).send({ message: "Admin not found" });
+        if(admin == null){
+           return response.status(501).send("Not authorized")
         }
-
         const newProduct =  {
             createdBy: admin._id,
             name: request.body.name,
@@ -203,7 +176,7 @@ app.post("/products/:id", async (request, response) => {
 });
 
 // Edit product
-app.put('/products/:id', async (request, response) => {
+app.put('/products/:id', authenticateAdmin, async (request, response) => {
     try {
         if(
             !request.body.name ||
@@ -232,7 +205,7 @@ app.put('/products/:id', async (request, response) => {
 });
 
 // Delete product
-app.delete('/products/:id', async (request, response) => {
+app.delete('/products/:id', authenticateAdmin, async (request, response) => {
     try {
         const { id } = request.params;
         const result = await Product.findByIdAndDelete(id);
@@ -249,6 +222,7 @@ app.delete('/products/:id', async (request, response) => {
     }
 });
 
+// Omar Part
 app.get("/",async (request, response) => {
     const admins = await Admin.find();
     const customers = await Customer.find();
@@ -257,3 +231,147 @@ app.get("/",async (request, response) => {
     response.json({ admins, customers, products, orders });
 
 });
+
+//get all products
+app.get("/products", async (req, res) => {
+    try{
+ 
+        res.status(200).send(await Product.find())
+
+    }catch(error){
+
+        res.status(404).send({message: "Product doesn't exist"})
+
+    }
+})
+//login an already existing user
+app.post('/login', async (req, res) => {
+    
+    const userCustomer = await Customer.findOne({email: req.body.email})
+    const userAdmin = await Admin.findOne({email: req.body.email})
+    try {
+      if(userCustomer == null){
+          if(userAdmin == null){
+              return res.status(400).send('No such user exists')
+          }else {
+              if(await bcrypt.compare(req.body.password, userAdmin.password)){
+                return res.json({accessToken: jwt.sign(userAdmin.toObject(), SECRET)})
+              }else {
+                  return res.send('Wrong password')
+              }
+          }
+      }else {
+          if(await bcrypt.compare(req.body.password, userCustomer.password)){
+            return res.json({accessToken: jwt.sign(userCustomer.toObject(), SECRET)})
+          }else {
+              return res.send('Wrong password')
+          }
+      } 
+  }
+
+  catch {
+      return res.status(500).json('Invalid login attempt')
+  }
+})
+//USE JWT authentication for customers
+function authenticateCustomer(req, res, next){
+    const auth = req.headers['authorization']
+
+    const token = auth && auth.split(' ')[1]
+
+    if(token == null){
+        return res.Status(401)
+    }
+
+    jwt.verify(token, SECRET, (err, user) => {
+        if(err) return res.Status(403)
+
+        req.user = user
+        
+        next()
+    })
+}
+//USE JWT authentication for admins
+function authenticateAdmin(req, res, next){
+    const auth = req.headers['authorization']
+
+    const token = auth && auth.split(' ')[1]
+
+    if(token == null){
+        return res.sendStatus(401)
+    }
+
+    jwt.verify(token, SECRET, (err, user) => {
+        if(err) return res.sendStatus(403)
+
+        req.user = user
+        
+        next()
+    })
+}
+//Register a new user
+app.post('/register', async (req, res) => {
+    if(await Admin.findOne({email: req.body.email}) || await Customer.findOne({email: req.body.email})){
+        return res.status(500).json('There is another account with this email')
+    }
+    if(await Admin.findOne({username: req.body.username}) || await Customer.findOne({username: req.body.username})){
+        return res.status(500).json('There is another account with this username')
+    }
+
+    try {
+        const salt = await bcrypt.genSalt()
+        
+        const hashedPassword = await bcrypt.hash(req.body.password, salt)
+    
+        const user = {
+             email: req.body.email ,
+             password: hashedPassword,
+             username: req.body.username,
+             firstName: req.body.firstName,
+             lastName: req.body.lastName,
+             address: req.body.address
+            }
+        const adminOrNot = req.body.admin
+        if(adminOrNot){
+           await Admin.create(user)
+        }else{ 
+           await Customer.create(user)    
+        }
+        return res.status(200).json('Registration Successful')
+    }catch(err) {
+        res.status(500).send(err.message)
+    }
+})
+//Get the orders for the customer that is logged in
+app.get('/orders', authenticateCustomer , async(req, res) => {
+    res.json(await Order.find({customer: req.user._id}))
+})
+//Place an order for the customer that is logged in
+app.post('/placeOrder',authenticateCustomer, async (req, res) => {
+
+    try{
+        const products = req.body.products
+        let total = 0
+        for(let item of products){
+            const temporary = await Product.findById(item)
+            if(temporary.stock == 0){
+                return res.status(500).json(`Item ${temporary.name} is out of stock, failed to place order`)
+            }
+            await Product.findByIdAndUpdate(item, {stock: temporary.stock - 1}, {new: true})
+            total += temporary.price
+        }
+    const order = {
+        customer: req.user._id,
+        products: products,
+        status: 'pending',
+        totalAmount: total,
+    } 
+
+    await Order.create(order)
+    
+    return res.status(200).send('Order placed successfully')
+
+    }catch(err){
+        return res.status(500).json(err.message)
+    }
+})
