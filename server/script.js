@@ -32,84 +32,95 @@ db.once('open', () => {
 });
 
 // Add new product
-app.post("/addProduct", authenticateAdmin, async (request, response) => {
+app.post("/addProduct", authenticateAdmin, async (req, res) => {
     try {
+        if(await Product.findOne({name: req.body.name})){
+            return res.status(500).json('There is another product with this name')
+        }
         if(
-            // need better way to get admin id (createdBy attribute)
-            !request.body.name ||
-            !request.body.description ||
-            !request.body.price ||
-            !request.body.stock
+            !req.body.name ||
+            !req.body.description ||
+            !req.body.price ||
+            !req.body.stock
         ) {
-            return response.status(400).send({
+            return res.status(400).send({
                 message: "Send all required fields: name, description, price, stock"
             });
         }
-        const admin = await Admin.findById(request.user._id)
+        const admin = await Admin.findById(req.user._id)
 
         if(admin == null){
-           return response.status(501).send("Not authorized")
+           return res.status(501).send("Not authorized")
         }
         const newProduct =  {
             createdBy: admin._id,
-            name: request.body.name,
-            description: request.body.description,
-            price: request.body.price,
-            stock: request.body.stock
+            name: req.body.name,
+            description: req.body.description,
+            price: req.body.price,
+            stock: req.body.stock
         }
         const product = await Product.create(newProduct);
 
-        return response.status(201).send(product);
+        return res.status(201).send(product);
     } catch (error) {
         console.log(error.message);
-        response.status(500).send({message: error.message})
+        res.status(500).send({message: error.message})
     }
 });
 
 // Edit product
-app.put('/products/:id', authenticateAdmin, async (request, response) => {
+app.put('/products/:id', authenticateAdmin, async (req, res) => {
     try {
         if(
-            !request.body.name ||
-            !request.body.description ||
-            !request.body.price ||
-            !request.body.stock
+            !req.body.name ||
+            !req.body.description ||
+            !req.body.price ||
+            !req.body.stock
         ) {
-            return response.status(400).send({
+            return res.status(400).send({
                 message: "Send all required fields: name, description, price, stock"
             });
         }
 
-        const { id } = request.params;
-        const result = await Product.findByIdAndUpdate(id, request.body);
-
-        if(!result) {
-            return response.status(404).json({ message: "Product not found" });
+        const admin = await Admin.findById(req.user._id);
+        const product = await Product.findById(req.params.id);
+        if(JSON.stringify(admin._id) != JSON.stringify(product.createdBy)){
+            return res.status(501).send("Not authorized");
         }
 
-        return response.status(200).json({ message: "Product updated successfully"})
+        const result = await Product.findByIdAndUpdate(req.params.id, req.body);
+
+        if(!result) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        return res.status(200).json({ message: "Product updated successfully"})
 
     } catch (error) {
         console.log(error.message);
-        response.status(500).send({message: error.message})
+        res.status(500).send({message: error.message})
     }
 });
 
 // Delete product
-app.delete('/products/:id', authenticateAdmin, async (request, response) => {
+app.delete('/products/:id', authenticateAdmin, async (req, res) => {
     try {
-        const { id } = request.params;
-        const result = await Product.findByIdAndDelete(id);
+        const admin = await Admin.findById(req.user._id);
+        const product = await Product.findById(req.params.id);
+        if(JSON.stringify(admin._id) != JSON.stringify(product.createdBy)){
+            return res.status(501).send("Not authorized");
+        }
+        const result = await Product.findByIdAndDelete(req.params.id);
 
         if(!result) {
-            return response.status(404).json({ message: "Product not found" });
+            return res.status(404).json({ message: "Product not found" });
         }
 
-        return response.status(200).send({ message: "Product deleted successfully"})
+        return res.status(200).send({ message: "Product deleted successfully"})
 
     } catch (error) {
         console.log(error.message);
-        response.status(500).send({message: error.message})
+        res.status(500).send({message: error.message})
     }
 });
 
