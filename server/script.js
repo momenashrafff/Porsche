@@ -69,7 +69,7 @@ app.post("/addProduct", authenticateAdmin, async (req, res) => {
 });
 
 // Edit product
-app.put('/products/:id', authenticateAdmin, async (req, res) => {
+app.put('/editProducts/:id', authenticateAdmin, async (req, res) => {
     try {
         if(
             !req.body.name ||
@@ -103,7 +103,7 @@ app.put('/products/:id', authenticateAdmin, async (req, res) => {
 });
 
 // Delete product
-app.delete('/products/:id', authenticateAdmin, async (req, res) => {
+app.delete('/deleteProducts/:id', authenticateAdmin, async (req, res) => {
     try {
         const admin = await Admin.findById(req.user._id);
         const product = await Product.findById(req.params.id);
@@ -282,6 +282,29 @@ app.post('/placeOrder',authenticateCustomer, async (req, res) => {
     return res.status(200).send('Order placed successfully')
 
     }catch(err){
+        return res.status(500).json(err.message)
+    }
+})
+
+//Adam part
+//cancel an order
+app.post('/cancelOrder',authenticateCustomer, async (req, res) => {
+    try{
+        const orders = await Order.find({customer: req.user._id})
+        const toCancel = orders.find(obj => obj.id == req.body.orderId)
+        if(toCancel.status != 'pending')
+        {
+            return res.status(501).send("This order has already been shipped")
+        }
+        const products = toCancel.products
+        for(let item of products)
+        {
+            const temporary = await Product.findById(item)
+            await Product.findByIdAndUpdate(item, {stock: temporary.stock + 1}, {new: true})
+        }
+        await Order.deleteOne(toCancel)
+        return res.status(200).send('Order cancelled successfully')
+    } catch(err) {
         return res.status(500).json(err.message)
     }
 })
