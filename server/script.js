@@ -135,6 +135,14 @@ app.get("/products", async (req, res) => {
 
     }
 })
+//search for a product 
+app.get("/findProduct", async (req, res) => {
+    try {
+        res.status(200).send(await Product.find({"name": req.body.name}))
+    }catch(err){
+        res.status(404).json('Product not found')
+    }
+})
 //login an already existing user
 app.post('/login', async (req, res) => {
     
