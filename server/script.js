@@ -18,9 +18,13 @@ const PORT = 3000; // Change the port number
 
 
 // Allow requests from http://localhost:3001
-app.use(cors({
-    origin: 'http://localhost:3001'
-}));
+// Enable CORS for all routes
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'http://localhost:3001');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next();
+});
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
@@ -91,9 +95,6 @@ app.put('/editProducts/:id', authenticateAdmin, async (req, res) => {
 
         const admin = await Admin.findById(req.user._id);
         const product = await Product.findById(req.params.id);
-        if(JSON.stringify(admin._id) != JSON.stringify(product.createdBy)){
-            return res.status(501).send("Not authorized");
-        }
 
         const result = await Product.findByIdAndUpdate(req.params.id, req.body);
 
@@ -199,7 +200,7 @@ function authenticateCustomer(req, res, next){
     }
 
     jwt.verify(token, SECRET, (err, user) => {
-        if(err) return res.Status(403)
+        if(err) return res.Status(404)
 
         req.user = user
         
@@ -217,7 +218,7 @@ function authenticateAdmin(req, res, next){
     }
 
     jwt.verify(token, SECRET, (err, user) => {
-        if(err) return res.sendStatus(403)
+        if(err) return res.sendStatus(404)
 
         req.user = user
         
