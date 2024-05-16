@@ -227,7 +227,6 @@ app.post('/register', async (req, res) => {
     if(await Admin.findOne({username: req.body.username}) || await Customer.findOne({username: req.body.username})){
         return res.status(500).json('There is another account with this username')
     }
-
     try {
         const salt = await bcrypt.genSalt()
         
@@ -308,3 +307,4 @@ app.post('/cancelOrder',authenticateCustomer, async (req, res) => {
         return res.status(500).json(err.message)
     }
 })
+
