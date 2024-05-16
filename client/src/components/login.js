@@ -1,8 +1,8 @@
-// Login.js
 import React, { useState } from 'react';
-import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+    const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
@@ -12,27 +12,36 @@ const Login = () => {
             email: username,
             password: password
         };
-        fetch('http://localhost:3000/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(requestBody)
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Handle successful response
-                console.log(data);
-            })
-            .catch(error => {
-                // Handle error
-                console.error('There was a problem with your fetch operation:', error);
+        try {
+            const response = await fetch('http://localhost:3000/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // 'Authorization': `Bearer ${token}` // Include Bearer token in the Authorization header
+
+                },
+                body: JSON.stringify(requestBody)
             });
+            if (!response.ok) {
+                throw new Error(response);
+            }
+            const data = await response.json();
+            // Handle successful response
+            if(data.admin) {
+                loggedd = 'admin';
+            }else{
+                loggedd = 'customer';
+            }
+            token = JSON.stringify(data.accessToken);
+            localStorage.setItem('token', JSON.stringify(data.accessToken));
+
+            console.log(token);
+            navigate('/home');
+            console.log(data);
+        } catch (error) {
+            // Handle error
+            console.error('There was a problem with your fetch operation:', error);
+        }
     };
 
     return (
@@ -54,4 +63,7 @@ const Login = () => {
     );
 };
 
+// Wrap the Login component with withRouter to access history object
 export default Login;
+export let loggedd = '';
+export let token = '';

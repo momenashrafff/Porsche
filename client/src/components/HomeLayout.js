@@ -1,6 +1,5 @@
 // Register.js
-import React, { useState } from 'react';
-import axios from 'axios';
+import React from 'react';
 import {NavLink} from "react-router-dom";
 import Login from "./login";
 import Register from "./register";

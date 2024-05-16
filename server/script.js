@@ -1,5 +1,5 @@
 const SECRET = "801f3dbdc8a3d987717c32f1492806bc81e07532d8e5ef0478f4b7f4735812ec159c76c66e049f7510b2556564c2ce2e20ac3ec8ee0161db7de5e6686aaf4fbc"
-
+const sec="anaadmin"
 const mongoose = require('mongoose');
 const Admin = require('./models/admin');
 const Customer = require('./models/customer');
@@ -144,9 +144,7 @@ app.get("/",async (request, response) => {
 //get all products
 app.get("/products", async (req, res) => {
     try{
- 
         res.status(200).send(await Product.find())
-
     }catch(error){
 
         res.status(404).send({message: "Product doesn't exist"})
@@ -172,14 +170,14 @@ app.post('/login', async (req, res) => {
               return res.status(400).send('No such user exists')
           }else {
               if(await bcrypt.compare(req.body.password, userAdmin.password)){
-                return res.json({accessToken: jwt.sign(userAdmin.toObject(), SECRET)})
+                return res.json({accessToken: jwt.sign(userAdmin.toObject(), SECRET), Admin: true})
               }else {
                   return res.send('Wrong password')
               }
           }
       }else {
           if(await bcrypt.compare(req.body.password, userCustomer.password)){
-            return res.json({accessToken: jwt.sign(userCustomer.toObject(), SECRET)})
+            return res.json({accessToken: jwt.sign(userCustomer.toObject(), SECRET), Admin: false})
           }else {
               return res.send('Wrong password')
           }
@@ -227,6 +225,7 @@ function authenticateAdmin(req, res, next){
     })
 }
 //Register a new user
+//email, password, username, firstName, lastName, address
 app.post('/register', async (req, res) => {
     if(await Admin.findOne({email: req.body.email}) || await Customer.findOne({email: req.body.email})){
         return res.status(500).json('There is another account with this email')
@@ -234,7 +233,11 @@ app.post('/register', async (req, res) => {
     if(await Admin.findOne({username: req.body.username}) || await Customer.findOne({username: req.body.username})){
         return res.status(500).json('There is another account with this username')
     }
+
     try {
+        if(!(req.body.admin===""||req.body.admin===sec)){
+            throw new Error("Not authorized")
+        }
         const salt = await bcrypt.genSalt()
         
         const hashedPassword = await bcrypt.hash(req.body.password, salt)
@@ -247,7 +250,7 @@ app.post('/register', async (req, res) => {
              lastName: req.body.lastName,
              address: req.body.address
             }
-        const adminOrNot = req.body.admin
+        const adminOrNot = !(req.body.admin==="")
         if(adminOrNot){
            await Admin.create(user)
         }else{ 
@@ -255,7 +258,8 @@ app.post('/register', async (req, res) => {
         }
         return res.status(200).json('Registration Successful')
     }catch(err) {
-        res.status(500).send(err.message)
+        console.log(err.message)
+        res.status(400).json(err.message)
     }
 })
 //Get the orders for the customer that is logged in

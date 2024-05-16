@@ -1,9 +1,12 @@
 // App.js
 import React from 'react';
-import {BrowserRouter as Router, createBrowserRouter, Route, RouterProvider, Switch} from 'react-router-dom';
+import { createBrowserRouter , RouterProvider} from 'react-router-dom';
 import Login from './components/login';
 import Register from './components/register';
 import HomeLayout from "./components/HomeLayout";
+import Home from "./components/Home";
+import Products from "./components/Products";
+
 
 
 
@@ -14,16 +17,27 @@ const router = createBrowserRouter([
         element: <HomeLayout />,
         loader: () => import('./components/HomeLayout')
     },
-            {
-                path: 'login',
-                element: <Login />,
-                loader: () => import('./components/login')
-            },
-            {
-                path: 'register',
-                element: <Register />,
-                loader: () => import('./components/register')
-            }
+    {
+        path: 'login',
+        element: <Login />,
+        loader: () => import('./components/login')
+    },
+    {
+        path: 'register',
+        element: <Register />,
+        loader: () => import('./components/register')
+    },
+    {
+        path: 'home',
+        element: <Home />,
+        loader: () => import('./components/Home')
+    }
+    ,
+    {
+        path: '/home/products',
+        element: <Products />,
+        loader: () => import('./components/Products')
+    }
 
 
 ]);
