@@ -35,13 +35,13 @@
    - ~~Ensure design meets ecommerce data requirements~~.
 
 3. **Backend API Development:**
-   - Design public and private API endpoints.
-   - Implement endpoints using Node.js.
-   - Integrate with MongoDB.
-   - Implement JWT-based authentication.
+   - ~~Design public and private API endpoints.~~
+   - ~~Implement endpoints using Node.js.~~
+   - ~~Integrate with MongoDB.~~
+   - ~~Implement JWT-based authentication.~~
 
 4. **Version Control and Collaboration:**
    - ~~Set up Git repository on GitHub.~~
-   - Divide tasks among team members.
-   - Create separate branches for contributions.
-   - Conduct regular merges and code reviews
+   - ~~Divide tasks among team members.~~
+   - ~~Create separate branches for contributions.~~
+   - ~~Conduct regular merges and code reviews~~
