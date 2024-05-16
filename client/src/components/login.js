@@ -8,17 +8,31 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const response = await axios.post('/api/login', {
-                username,
-                password,
+        const requestBody = {
+            email: username,
+            password: password
+        };
+        fetch('http://localhost:3000/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Handle successful response
+                console.log(data);
+            })
+            .catch(error => {
+                // Handle error
+                console.error('There was a problem with your fetch operation:', error);
             });
-            console.log(response.data);
-            // Handle successful login
-        } catch (error) {
-            console.error(error);
-            // Handle error
-        }
     };
 
     return (

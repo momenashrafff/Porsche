@@ -9,11 +9,18 @@ const bcrypt = require('bcrypt')
 const express = require('express');
 const jwt = require('jsonwebtoken')
 const app = express();
+const cors = require('cors');
 
 app.use(express.json());
 
 const PORT = 3000; // Change the port number
 
+
+
+// Allow requests from http://localhost:3001
+app.use(cors({
+    origin: 'http://localhost:3001'
+}));
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
