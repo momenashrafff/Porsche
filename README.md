@@ -45,3 +45,5 @@
    - ~~Divide tasks among team members.~~
    - ~~Create separate branches for contributions.~~
    - ~~Conduct regular merges and code reviews~~
+5. **Backend**
+   - Start working on backend
