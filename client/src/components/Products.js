@@ -1,21 +1,93 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import token from './login';
+import {useNavigate} from "react-router-dom";
 const Products = () => {
     const [Products, setProducts] = useState([]);
     const [editedProducts, setEditedProducts] = useState(Products);
+    const navigate = useNavigate();
+    const [name, setName] = useState('');
+    const [description, setDescription] = useState('');
+    const [price, setPrice] = useState('');
+    const [stock, setStock] = useState('');
+    const [nameSearch, setNameSearch] = useState('');
 
     const handleInputChange = (index, field, value) => {
         const updatedProducts = [...editedProducts];
         updatedProducts[index][field] = value;
         setEditedProducts(updatedProducts);
     };
+    const handleSubmit =  (e) => {
+        e.preventDefault();
+        fetch(`http://localhost:3000/addProduct`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: localStorage.getItem("token"),
+            },
+            body: JSON.stringify({
+                name: name,
+                description: description,
+                price: price,
+                stock: stock,
+            }),
+        })
+            .then((res) => {
+                if (!res.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return res.json();
+            })
+            .then((data) => {
+                console.log("Product updated successfully:", data);
+                // Update state with new product data
+                window.location.reload();
+
+            })
+            .catch((error) => {
+                console.error("Error updating product:", error);
+            });
+    }
+    const handleSubmitSearch =  (e) => {
+        e.preventDefault();
+        fetch(`http://localhost:3000/findProduct`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: localStorage.getItem("token"),
+            },
+            body: JSON.stringify({
+                name: nameSearch
+            })
+        })
+            .then((res) => {
+                if (!res.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return res.json();
+            })
+            .then((data) => {
+                console.log("product:", data);
+                // Update state with new product data
+                //display the products
+                document.getElementById('field1').value = data[0].name;
+                document.getElementById('field2').value = data[0].description;
+                document.getElementById('field3').value = data[0].price;
+                document.getElementById('field4').value = data[0].stock;
+
+
+            })
+            .catch((error) => {
+                console.error("Error updating product:", error);
+            });
+    }
     useEffect(() => {
+        console.log(localStorage.getItem("token"));
         fetch(`http://localhost:3000/products`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: localStorage.getItem("token"),
+                'Authorization': `Bearer ${localStorage.getItem("token")}`,
             },
         })
             .then((res) => {
@@ -68,38 +140,129 @@ const Products = () => {
                     />
                     <button
                         onClick={() => {
-                            pr.name= editedProducts[index].name;
-                            pr.description= editedProducts[index].description;
-                            pr.price= editedProducts[index].price;
-                            pr.stock= editedProducts[index].stock;
-                            //fetch
+                            // Update product properties from editedProducts
+                            pr.name = editedProducts[index].name;
+                            pr.description = editedProducts[index].description;
+                            pr.price = editedProducts[index].price;
+                            pr.stock = editedProducts[index].stock;
+
+                            // Send updated product data to the server
                             fetch(`http://localhost:3000/editProducts/${pr._id}`, {
                                 method: "PUT",
                                 headers: {
                                     "Content-Type": "application/json",
-                                    Authorization:`Bearer ${localStorage.getItem("token")}` ,
+                                    Authorization: localStorage.getItem("token"),
                                 },
-                                body:JSON.stringify({
+                                body: JSON.stringify({
                                     name: pr.name,
                                     description: pr.description,
                                     price: pr.price,
                                     stock: pr.stock,
                                 }),
-
-                            }).then((res) => {
-                                return res.json();
                             })
+                                .then((res) => {
+                                    if (!res.ok) {
+                                        throw new Error("Network response was not ok");
+                                    }
+                                    return res.json();
+                                })
                                 .then((data) => {
-                                    console.log("product created (or updated) ok");
-                                    setProducts(data);
-                                    setEditedProducts(data);
+                                    console.log("Product updated successfully:", data);
+                                    // Update state with new product data
                                 })
                                 .catch((error) => {
-                                    console.error("Error creating/updating product:", error);
+                                    console.error("Error updating product:", error);
                                 });
-                        }}>update </button>
+                        }}>Update</button>
+                    <button
+                        onClick={() => {
+                            // Update product properties from editedProducts
+                            pr.name = editedProducts[index].name;
+                            pr.description = editedProducts[index].description;
+                            pr.price = editedProducts[index].price;
+                            pr.stock = editedProducts[index].stock;
+
+                            // Send updated product data to the server
+                            fetch(`http://localhost:3000/deleteProducts/${pr._id}`, {
+                                method: "DELETE",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    Authorization: localStorage.getItem("token"),
+                                }
+                            })
+                                .then((res) => {
+                                    if (!res.ok) {
+                                        throw new Error("Network response was not ok");
+                                    }
+                                    return res.json();
+                                })
+                                .then((data) => {
+                                    console.log("Product updated successfully:", data);
+                                    // Update state with new product data
+                                    window.location.reload();
+                                })
+                                .catch((error) => {
+                                    console.error("Error updating product:", error);
+                                });
+                        }}>delete</button>
                 </div>
+
             ))}
+            <form className="adding" onSubmit={handleSubmit}>
+                <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                />
+                <input
+                    type="text"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                />
+                <input
+                    type="number"
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                />
+                <input
+                    type="number"
+                    value={stock}
+                    onChange={(e) => setStock(e.target.value)}
+                />
+                <button type="submit">add</button>
+
+            </form>
+            <form className="adding1" onSubmit={handleSubmitSearch} >
+                <input
+                    type="text"
+                    value={nameSearch}
+                    onChange={(e) => setNameSearch(e.target.value)}
+                />
+                <button type="submit">search</button>
+            </form>
+            <div>
+                <input
+                    type="text"
+                    id="field1"
+                    placeholder="field1"
+                />
+                <input
+                    type="text"
+                    id="field2"
+                    placeholder="field2"
+                />
+                <input
+                    type="number"
+                    id="field3"
+                    placeholder="field3"
+                />
+                <input
+                    type="number"
+                    id="field4"
+                    placeholder="field4"
+
+                />
+            </div>
         </div>
     );
 };

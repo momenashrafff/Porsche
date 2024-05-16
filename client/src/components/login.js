@@ -33,8 +33,9 @@ const Login = () => {
                 loggedd = 'customer';
             }
             token = JSON.stringify(data.accessToken);
-            localStorage.setItem('token', JSON.stringify(data.accessToken));
-
+            token=token.split('"')[1];
+            console.log(token.charAt(0));
+            localStorage.setItem('token', token);
             console.log(token);
             navigate('/home');
             console.log(data);

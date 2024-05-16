@@ -115,14 +115,14 @@ app.delete('/deleteProducts/:id', authenticateAdmin, async (req, res) => {
     try {
         const admin = await Admin.findById(req.user._id);
         const product = await Product.findById(req.params.id);
-        if(JSON.stringify(admin._id) != JSON.stringify(product.createdBy)){
-            return res.status(501).send("Not authorized");
-        }
+
         const result = await Product.findByIdAndDelete(req.params.id);
 
         if(!result) {
+
             return res.status(404).json({ message: "Product not found" });
         }
+
 
         return res.status(200).send({ message: "Product deleted successfully"})
 
@@ -153,7 +153,7 @@ app.get("/products", async (req, res) => {
     }
 })
 //search for a product 
-app.get("/findProduct", async (req, res) => {
+app.post("/findProduct", async (req, res) => {
     try {
         res.status(200).send(await Product.find({"name": req.body.name}))
     }catch(err){
@@ -193,14 +193,18 @@ app.post('/login', async (req, res) => {
 function authenticateCustomer(req, res, next){
     const auth = req.headers['authorization']
 
-    const token = auth && auth.split(' ')[1]
+    let token = auth && auth.split(' ')[1]
 
     if(token == null){
-        return res.Status(401)
+        token= auth;
+    }
+    if(token == null){
+        console.log('No token');
+        return res.sendStatus(401)
     }
 
     jwt.verify(token, SECRET, (err, user) => {
-        if(err) return res.Status(404)
+        if(err) return res.status(404)
 
         req.user = user
         
@@ -210,9 +214,10 @@ function authenticateCustomer(req, res, next){
 //USE JWT authentication for admins
 function authenticateAdmin(req, res, next){
     const auth = req.headers['authorization']
-
-    const token = auth && auth.split(' ')[1]
-
+    let token = auth && auth.split(' ')[1]
+    if(token == null){
+        token= auth;
+    }
     if(token == null){
         return res.sendStatus(401)
     }
@@ -225,6 +230,10 @@ function authenticateAdmin(req, res, next){
         next()
     })
 }
+
+app.post('/admin', authenticateAdmin, async (req, res) => {
+    return res.status(200).send('Admin registration successful');
+})
 //Register a new user
 //email, password, username, firstName, lastName, address
 app.post('/register', async (req, res) => {
@@ -275,7 +284,7 @@ app.post('/placeOrder',authenticateCustomer, async (req, res) => {
         let total = 0
         for(let item of products){
             const temporary = await Product.findById(item)
-            if(temporary.stock == 0){
+            if(temporary.stock === 0){
                 return res.status(500).json(`Item ${temporary.name} is out of stock, failed to place order`)
             }
             await Product.findByIdAndUpdate(item, {stock: temporary.stock - 1}, {new: true})
