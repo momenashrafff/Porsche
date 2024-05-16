@@ -11,47 +11,19 @@ import HomeLayout from "./components/HomeLayout";
 const router = createBrowserRouter([
     {
         path: '/',
-        element: <HomeLayout />,
-        children: [
+        element: <HomeLayout />},
             {
                 path: 'login',
                 element: <Login />,
-                // children: [
-                //     {
-                //         index: true,
-                //         element: <EventsPage />,
-                //         loader: eventsLoader,
-                //     },
-                //     {
-                //         path: ':eventId',
-                //         id: 'event-detail',
-                //         loader: eventDetailLoader,
-                //         children: [
-                //             {
-                //                 index: true,
-                //                 element: <EventDetailPage />,
-                //                 action: deleteEventAction,
-                //             },
-                //             {
-                //                 path: 'edit',
-                //                 element: <EditEventPage />,
-                //                 action: manipulateEventAction,
-                //             },
-                //         ],
-                //     },
-                //     {
-                //         path: 'new',
-                //         element: <NewEventPage />,
-                //         action: manipulateEventAction,
-                //     },
-                // ],
+                loader: () => import('./components/login')
             },
             {
                 path: 'register',
                 element: <Register />,
-            },
-        ],
-    },
+                loader: () => import('./components/register')
+            }
+
+
 ]);
 
 function App() {

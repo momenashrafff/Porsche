@@ -18,8 +18,7 @@ const HomeLayout = () => {
                 </NavLink>
                 <NavLink
                     to="/register"
-                    className={Register
-                    }
+                    className={Register}
                 >
                     register
                 </NavLink>
