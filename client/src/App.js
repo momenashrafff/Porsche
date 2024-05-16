@@ -11,7 +11,9 @@ import HomeLayout from "./components/HomeLayout";
 const router = createBrowserRouter([
     {
         path: '/',
-        element: <HomeLayout />},
+        element: <HomeLayout />,
+        loader: () => import('./components/HomeLayout')
+    },
             {
                 path: 'login',
                 element: <Login />,
