@@ -6,6 +6,7 @@ import Register from './components/register';
 import HomeLayout from "./components/HomeLayout";
 import Home from "./components/Home";
 import Products from "./components/Products";
+import Orders from "./components/Orders";
 
 
 
@@ -37,6 +38,11 @@ const router = createBrowserRouter([
         path: '/home/products',
         element: <Products />,
         loader: () => import('./components/Products')
+    },
+    {
+        path: '/home/orders',
+        element: <Orders />,
+        loader: () => import('./components/Orders')
     }
 
 

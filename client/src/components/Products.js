@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import token from './login';
-import {useNavigate} from "react-router-dom";
 const Products = () => {
     const [Products, setProducts] = useState([]);
     const [editedProducts, setEditedProducts] = useState(Products);
-    const navigate = useNavigate();
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
     const [stock, setStock] = useState('');
     const [nameSearch, setNameSearch] = useState('');
+    const [cartItems, setCartItems] = useState([]);
 
+    const addToCart = (product) => {
+        setCartItems([...cartItems, product]);
+    };
     const handleInputChange = (index, field, value) => {
         const updatedProducts = [...editedProducts];
         updatedProducts[index][field] = value;
@@ -205,6 +205,10 @@ const Products = () => {
                                     console.error("Error updating product:", error);
                                 });
                         }}>delete</button>
+                    <button
+                        onClick={() => {
+                            addToCart(pr);
+                        }}>add to kart</button>
                 </div>
 
             ))}
@@ -230,7 +234,6 @@ const Products = () => {
                     onChange={(e) => setStock(e.target.value)}
                 />
                 <button type="submit">add</button>
-
             </form>
             <form className="adding1" onSubmit={handleSubmitSearch} >
                 <input
@@ -263,8 +266,51 @@ const Products = () => {
 
                 />
             </div>
+            <p>kart: </p>
+            {cartItems.map((item, index) => (
+                <ul>
+                    <li key={index}>{item.name} - {item.price}</li>
+                    <li key={index}>{item.description}</li>
+                </ul>
+                ))}
+
+            <button
+                onClick={() => {
+                    const idsArray = cartItems.map(product => product._id);
+
+                    fetch(`http://localhost:3000/placeOrder`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: localStorage.getItem("token"),
+                        },
+                        body: JSON.stringify({
+                            products: idsArray,
+                        }),
+                    })
+                        .then((res) => {
+                            if (!res.ok) {
+                                throw new Error("Network response was not ok");
+                            }
+                            return res.json();
+                        })
+                        .then((data) => {
+                            console.log("added order:", data);
+                            setCartItems([])
+                            // Update state with new product data
+                            window.location.reload();
+                        })
+                        .catch((error) => {
+                            setCartItems([])
+                            console.error("Error updating product:", error);
+                        });
+                }}>place order</button>
+
+
         </div>
     );
 };
 
 export default Products;
+
+export let productso;

@@ -1,9 +1,8 @@
 // Register.js
 import React from 'react';
 import {NavLink} from "react-router-dom";
-import Login from "./login";
-import Register from "./register";
 import Products from "./Products";
+import Orders from "./Orders";
 
 const Home = () => {
     return (
@@ -16,12 +15,12 @@ const Home = () => {
             >
                 view all products
             </NavLink>
-            {/*<NavLink*/}
-            {/*    to="/home/findproducts"*/}
-            {/*    className={Register}*/}
-            {/*>*/}
-            {/*    find products*/}
-            {/*</NavLink>*/}
+            <NavLink
+                to="/home/orders"
+                className={Orders}
+            >
+                orders
+            </NavLink>
         </div>
     );
 };

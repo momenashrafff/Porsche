@@ -139,7 +139,6 @@ app.get("/",async (request, response) => {
     const products = await Product.find();
     const orders = await Order.find();
     response.json({ admins, customers, products, orders });
-
 });
 
 //get all products
@@ -150,6 +149,14 @@ app.get("/products", async (req, res) => {
 
         res.status(404).send({message: "Product doesn't exist"})
 
+    }
+})
+//get a product by id
+app.get("/product/:id", async (req, res) => {
+    try{
+        res.status(200).send(await Product.findById(req.params.id))
+    }catch(error){
+        res.status(404).send({message: "Product doesn't exist"})
     }
 })
 //search for a product 
@@ -194,12 +201,11 @@ function authenticateCustomer(req, res, next){
     const auth = req.headers['authorization']
 
     let token = auth && auth.split(' ')[1]
-
     if(token == null){
         token= auth;
     }
+    console.log(token)
     if(token == null){
-        console.log('No token');
         return res.sendStatus(401)
     }
 
@@ -290,29 +296,31 @@ app.post('/placeOrder',authenticateCustomer, async (req, res) => {
             await Product.findByIdAndUpdate(item, {stock: temporary.stock - 1}, {new: true})
             total += temporary.price
         }
-    const order = {
-        customer: req.user._id,
-        products: products,
-        status: 'pending',
-        totalAmount: total,
-    } 
+        const order = {
+            customer: req.user._id,
+            products: products,
+            status: 'pending',
+            totalAmount: total,
+        }
 
-    await Order.create(order)
-    
-    return res.status(200).send('Order placed successfully')
+        await Order.create(order)
 
+        return res.status(200).send('Order placed successfully')
     }catch(err){
         return res.status(500).json(err.message)
     }
 })
+
+
+
 
 //Adam part
 //cancel an order
 app.post('/cancelOrder',authenticateCustomer, async (req, res) => {
     try{
         const orders = await Order.find({customer: req.user._id})
-        const toCancel = orders.find(obj => obj.id == req.body.orderId)
-        if(toCancel.status != 'pending')
+        const toCancel = orders.find(obj => obj.id === req.body.orderId)
+        if(toCancel.status !== 'pending')
         {
             return res.status(501).send("This order has already been shipped")
         }
