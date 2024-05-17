@@ -1,6 +1,7 @@
 // Register.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './register.css';
 
 const Register = ({ history }) => {
     const [username, setUsername] = useState('');
@@ -52,52 +53,24 @@ const Register = ({ history }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <input
-                type="text"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-            />
-            <input
-                type="text"
-                placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-            />
-            <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
-            <input
-                type="text"
-                placeholder="First Name"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-            />
-            <input
-                type="text"
-                placeholder="Last Name"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-            />
-            <input
-                type="text"
-                placeholder="Address"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-            />
-            <input
-                type="password"
-                placeholder="secret key"
-                value={sec}
-                onChange={(e) => setSec(e.target.value)}
-            />
-            <button type="submit">Register</button>
-
-        </form>
+        <div className="container1">
+            <div className="top1"></div>
+            <div className="bottom1"></div>
+            <div className="center1">
+                <h1 className='porsche1'>Porsche</h1>
+                <h2>Sign Up</h2>
+                <form onSubmit={handleSubmit}>
+                    <input type="text" placeholder="email" value={username} onChange={(e) => setUsername(e.target.value)} />
+                    <input type="text" placeholder="Username" value={email} onChange={(e) => setEmail(e.target.value)} />
+                    <input type="password" placeholder="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                    <input type="text" placeholder="First Name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+                    <input type="text" placeholder="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+                    <input type="text" placeholder="Address" value={address} onChange={(e) => setAddress(e.target.value)} />
+                    <input type="password" placeholder="Secret Key" value={sec} onChange={(e) => setSec(e.target.value)} />
+                    <button type="submit">Register</button>
+                </form>
+            </div>
+        </div>
     );
 };
 

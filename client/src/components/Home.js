@@ -3,10 +3,11 @@ import React from 'react';
 import {NavLink} from "react-router-dom";
 import Products from "./Products";
 import Orders from "./Orders";
-
+import './Home.css';
 const Home = () => {
     return (
-        <div>
+        <div className="wrapper2">
+            <div className="container2">
             <h1>Welcome to our CustomerHome Page</h1>
             <NavLink
                 to="/home/products"
@@ -21,6 +22,7 @@ const Home = () => {
             >
                 orders
             </NavLink>
+            </div>
         </div>
     );
 };

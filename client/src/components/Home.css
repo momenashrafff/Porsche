@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css?family=Raleway:400,700');
+@import url('https://fonts.cdnfonts.com/css/911-porscha');
+
+*, *:before, *:after {
+    box-sizing: border-box;
+}
+
+.wrapper2 {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 20px; /* Space from the top */
+}
+
+.container2 {
+    width: 80%; /* Increased width to accommodate larger content */
+    max-width: 1200px;
+    text-align: center;
+    padding: 40px;
+    background: #ffffff; /* White background for content */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+    border-radius: 8px;
+}
+
+h1 {
+    font-family: '911 Porscha', sans-serif;
+    font-size: 40px;
+    color: #741b1b;
+    margin-bottom: 20px;
+}
+
+a {
+    display: inline-block;
+    margin: 10px;
+    padding: 15px 32px;
+    font-size: 16px;
+    text-decoration: none;
+    color: white;
+    background-color: #741b1b;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+a:hover {
+    background-color: #b83232;
+}
+
+a:active {
+    background-color: #741b1b;
+}
