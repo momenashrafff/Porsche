@@ -3,7 +3,7 @@ import React from 'react';
 import {NavLink} from "react-router-dom";
 import Products from "./Products";
 import Orders from "./Orders";
-
+import './Home.css';
 const Home = () => {
     return (
         <div className="wrapper2">
