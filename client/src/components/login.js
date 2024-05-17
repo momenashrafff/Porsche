@@ -28,10 +28,12 @@ const Login = () => {
             }
             const data = await response.json();
             // Handle successful response
-            if(data.admin) {
+            if(data.Admin) {
                 loggedd = 'admin';
+                localStorage.setItem('isAdmin', 'true');
             }else{
                 loggedd = 'customer';
+                localStorage.setItem('isAdmin', 'false');
             }
             token = JSON.stringify(data.accessToken);
             token=token.split('"')[1];
@@ -40,6 +42,8 @@ const Login = () => {
             console.log(token);
             navigate('/home');
             console.log(data);
+            console.log('Login successful:', data);
+            console.log(localStorage.getItem('isAdmin'));
         } catch (error) {
             // Handle error
             console.error('There was a problem with your fetch operation:', error);

@@ -16,12 +16,14 @@ const Home = () => {
             >
                 view all products
             </NavLink>
+            {localStorage.getItem("isAdmin") === "false" && 
             <NavLink
                 to="/home/orders"
                 className={Orders}
             >
                 orders
             </NavLink>
+            }
             </div>
         </div>
     );

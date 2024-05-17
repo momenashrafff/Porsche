@@ -1,0 +1,68 @@
+/* Center the container for the entire OrdersComponent */
+.orders-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.orders-container {
+    margin: 20px;
+    font-family: Arial, sans-serif;
+    width: 50%;
+}
+
+/* Styling each order */
+.order {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+}
+
+/* Header for each order */
+.order h2 {
+    margin-top: 0;
+    font-size: 1.5em;
+    color: #333;
+}
+
+/* List of products in an order */
+.order ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+/* Individual product item */
+.order li {
+    border-bottom: 1px solid #eee;
+    padding: 10px 0;
+}
+
+.order li:last-child {
+    border-bottom: none;
+}
+
+/* Product details */
+.product-details {
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.product-details h3 {
+    margin-top: 0;
+    font-size: 1.2em;
+    color: #007BFF;
+}
+
+.product-details p {
+    margin: 5px 0;
+    color: #555;
+}
+
+/* Total amount and status */
+.order p {
+    font-weight: bold;
+    color: #333;
+}

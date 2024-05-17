@@ -155,6 +155,7 @@ const Products = () => {
                         disabled // disable editing of _id field
                         hidden={true}
                     />
+                    {localStorage.getItem("isAdmin") === "true" &&
                     <button className='update'
                             onClick={() => {
                                 // Update product properties from editedProducts
@@ -191,7 +192,10 @@ const Products = () => {
                                         console.error("Error updating product:", error);
                                     });
                             }}>Update</button>
-                    <button
+                            }
+                    
+                    {localStorage.getItem("isAdmin") === "true" &&
+                        <button
                         onClick={() => {
                             // Update product properties from editedProducts
                             pr.name = editedProducts[index].name;
@@ -221,10 +225,18 @@ const Products = () => {
                                 .catch((error) => {
                                     console.error("Error updating product:", error);
                                 });
-                        }}>Delete</button>
+                        }}>Delete</button>}
+                        {localStorage.getItem("isAdmin") === "false" &&
+                        <button
+                        onClick={() => {
+                            addToCart(pr);
+                        }}>add to kart</button>
+                    }
+
                 </div>
 
             ))}
+            {localStorage.getItem("isAdmin") === "true" &&
             <form className="adding" onSubmit={handleSubmit}>
                 <label>Name</label>
                 <input
@@ -253,6 +265,7 @@ const Products = () => {
                 <button type="submit">add</button>
 
             </form>
+}
             <form className="adding1" onSubmit={handleSubmitSearch} >
                 <input
                     type="text"
@@ -281,9 +294,51 @@ const Products = () => {
                     type="number"
                     id="field4"
                     placeholder="field4"
-
                 />
             </div>
+            {localStorage.getItem("isAdmin") === "false" &&
+            <p>kart: </p>
+}
+            {cartItems.map((item, index) => (
+                <ul>
+                    <li key={index}>{item.name} - {item.price}</li>
+                    <li key={index}>{item.description}</li>
+                </ul>
+            ))}
+            {localStorage.getItem("isAdmin") === "false" &&
+            <button
+                onClick={() => {
+                    const idsArray = cartItems.map(product => product._id);
+
+                    fetch(`http://localhost:3000/placeOrder`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: localStorage.getItem("token"),
+                        },
+                        body: JSON.stringify({
+                            products: idsArray,
+                        }),
+                    })
+                        .then((res) => {
+                            if (!res.ok) {
+                                throw new Error("Network response was not ok");
+                            }
+                            return res.json();
+                        })
+                        .then((data) => {
+                            console.log("added order:", data);
+                            setCartItems([])
+                            // Update state with new product data
+                            window.location.reload();
+                        })
+                        .catch((error) => {
+                            setCartItems([])
+                            console.error("Error updating product:", error);
+                        });
+                }}>place order</button>
+            }
+
         </div>
     );
 };
