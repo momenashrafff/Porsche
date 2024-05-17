@@ -1,5 +1,5 @@
 const SECRET = "801f3dbdc8a3d987717c32f1492806bc81e07532d8e5ef0478f4b7f4735812ec159c76c66e049f7510b2556564c2ce2e20ac3ec8ee0161db7de5e6686aaf4fbc"
-
+const sec="anaadmin"
 const mongoose = require('mongoose');
 const Admin = require('./models/admin');
 const Customer = require('./models/customer');
@@ -9,11 +9,22 @@ const bcrypt = require('bcrypt')
 const express = require('express');
 const jwt = require('jsonwebtoken')
 const app = express();
+const cors = require('cors');
 
 app.use(express.json());
 
 const PORT = 3000; // Change the port number
 
+
+
+// Allow requests from http://localhost:3001
+// Enable CORS for all routes
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'http://localhost:3001');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next();
+});
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
@@ -84,9 +95,6 @@ app.put('/editProducts/:id', authenticateAdmin, async (req, res) => {
 
         const admin = await Admin.findById(req.user._id);
         const product = await Product.findById(req.params.id);
-        if(JSON.stringify(admin._id) != JSON.stringify(product.createdBy)){
-            return res.status(501).send("Not authorized");
-        }
 
         const result = await Product.findByIdAndUpdate(req.params.id, req.body);
 
@@ -107,14 +115,14 @@ app.delete('/deleteProducts/:id', authenticateAdmin, async (req, res) => {
     try {
         const admin = await Admin.findById(req.user._id);
         const product = await Product.findById(req.params.id);
-        if(JSON.stringify(admin._id) != JSON.stringify(product.createdBy)){
-            return res.status(501).send("Not authorized");
-        }
+
         const result = await Product.findByIdAndDelete(req.params.id);
 
         if(!result) {
+
             return res.status(404).json({ message: "Product not found" });
         }
+
 
         return res.status(200).send({ message: "Product deleted successfully"})
 
@@ -131,23 +139,28 @@ app.get("/",async (request, response) => {
     const products = await Product.find();
     const orders = await Order.find();
     response.json({ admins, customers, products, orders });
-
 });
 
 //get all products
 app.get("/products", async (req, res) => {
     try{
- 
         res.status(200).send(await Product.find())
-
     }catch(error){
 
         res.status(404).send({message: "Product doesn't exist"})
 
     }
 })
+//get a product by id
+app.get("/product/:id", async (req, res) => {
+    try{
+        res.status(200).send(await Product.findById(req.params.id))
+    }catch(error){
+        res.status(404).send({message: "Product doesn't exist"})
+    }
+})
 //search for a product 
-app.get("/findProduct", async (req, res) => {
+app.post("/findProduct", async (req, res) => {
     try {
         res.status(200).send(await Product.find({"name": req.body.name}))
     }catch(err){
@@ -165,14 +178,14 @@ app.post('/login', async (req, res) => {
               return res.status(400).send('No such user exists')
           }else {
               if(await bcrypt.compare(req.body.password, userAdmin.password)){
-                return res.json({accessToken: jwt.sign(userAdmin.toObject(), SECRET)})
+                return res.json({accessToken: jwt.sign(userAdmin.toObject(), SECRET), Admin: true})
               }else {
                   return res.send('Wrong password')
               }
           }
       }else {
           if(await bcrypt.compare(req.body.password, userCustomer.password)){
-            return res.json({accessToken: jwt.sign(userCustomer.toObject(), SECRET)})
+            return res.json({accessToken: jwt.sign(userCustomer.toObject(), SECRET), Admin: false})
           }else {
               return res.send('Wrong password')
           }
@@ -187,14 +200,17 @@ app.post('/login', async (req, res) => {
 function authenticateCustomer(req, res, next){
     const auth = req.headers['authorization']
 
-    const token = auth && auth.split(' ')[1]
-
+    let token = auth && auth.split(' ')[1]
     if(token == null){
-        return res.Status(401)
+        token= auth;
+    }
+    console.log(token)
+    if(token == null){
+        return res.sendStatus(401)
     }
 
     jwt.verify(token, SECRET, (err, user) => {
-        if(err) return res.Status(403)
+        if(err) return res.status(404)
 
         req.user = user
         
@@ -204,22 +220,28 @@ function authenticateCustomer(req, res, next){
 //USE JWT authentication for admins
 function authenticateAdmin(req, res, next){
     const auth = req.headers['authorization']
-
-    const token = auth && auth.split(' ')[1]
-
+    let token = auth && auth.split(' ')[1]
+    if(token == null){
+        token= auth;
+    }
     if(token == null){
         return res.sendStatus(401)
     }
 
     jwt.verify(token, SECRET, (err, user) => {
-        if(err) return res.sendStatus(403)
+        if(err) return res.sendStatus(404)
 
         req.user = user
         
         next()
     })
 }
+
+app.post('/admin', authenticateAdmin, async (req, res) => {
+    return res.status(200).send('Admin registration successful');
+})
 //Register a new user
+//email, password, username, firstName, lastName, address
 app.post('/register', async (req, res) => {
     if(await Admin.findOne({email: req.body.email}) || await Customer.findOne({email: req.body.email})){
         return res.status(500).json('There is another account with this email')
@@ -229,6 +251,9 @@ app.post('/register', async (req, res) => {
     }
 
     try {
+        if(!(req.body.admin===""||req.body.admin===sec)){
+            throw new Error("Not authorized")
+        }
         const salt = await bcrypt.genSalt()
         
         const hashedPassword = await bcrypt.hash(req.body.password, salt)
@@ -241,7 +266,7 @@ app.post('/register', async (req, res) => {
              lastName: req.body.lastName,
              address: req.body.address
             }
-        const adminOrNot = req.body.admin
+        const adminOrNot = !(req.body.admin==="")
         if(adminOrNot){
            await Admin.create(user)
         }else{ 
@@ -249,7 +274,8 @@ app.post('/register', async (req, res) => {
         }
         return res.status(200).json('Registration Successful')
     }catch(err) {
-        res.status(500).send(err.message)
+        console.log(err.message)
+        res.status(400).json(err.message)
     }
 })
 //Get the orders for the customer that is logged in
@@ -264,35 +290,37 @@ app.post('/placeOrder',authenticateCustomer, async (req, res) => {
         let total = 0
         for(let item of products){
             const temporary = await Product.findById(item)
-            if(temporary.stock == 0){
+            if(temporary.stock === 0){
                 return res.status(500).json(`Item ${temporary.name} is out of stock, failed to place order`)
             }
             await Product.findByIdAndUpdate(item, {stock: temporary.stock - 1}, {new: true})
             total += temporary.price
         }
-    const order = {
-        customer: req.user._id,
-        products: products,
-        status: 'pending',
-        totalAmount: total,
-    } 
+        const order = {
+            customer: req.user._id,
+            products: products,
+            status: 'pending',
+            totalAmount: total,
+        }
 
-    await Order.create(order)
-    
-    return res.status(200).send('Order placed successfully')
+        await Order.create(order)
 
+        return res.status(200).send('Order placed successfully')
     }catch(err){
         return res.status(500).json(err.message)
     }
 })
+
+
+
 
 //Adam part
 //cancel an order
 app.post('/cancelOrder',authenticateCustomer, async (req, res) => {
     try{
         const orders = await Order.find({customer: req.user._id})
-        const toCancel = orders.find(obj => obj.id == req.body.orderId)
-        if(toCancel.status != 'pending')
+        const toCancel = orders.find(obj => obj.id === req.body.orderId)
+        if(toCancel.status !== 'pending')
         {
             return res.status(501).send("This order has already been shipped")
         }
@@ -308,3 +336,4 @@ app.post('/cancelOrder',authenticateCustomer, async (req, res) => {
         return res.status(500).json(err.message)
     }
 })
+
