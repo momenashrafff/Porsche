@@ -1,98 +1,103 @@
-@import url('https://fonts.googleapis.com/css?family=Raleway:400,700');
-@import url('https://fonts.cdnfonts.com/css/911-porscha');
-
-*, *:before, *:after {
-    box-sizing: border-box;
-}
-.update  {
-    margin: 20px;
-}
-
-.wrapper-product {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    margin-top: 20px;
+.home-layout {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   background-color: #f5f5f5;
+   padding: 10px;
+   height: 60px; /* Adjust height as needed */
 }
 
-.container-product {
-    width: 80%;
-    max-width: 1200px;
-    text-align: center;
-    padding: 40px;
-    background: #ffffff;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    margin-bottom: 20px;
+.title {
+   font-family: '911 Porscha';
+   color: #741b1b;
+   flex-grow: 1;
+   text-align: center;
+   font-size: 24px; /* Adjust font size as needed */
+   font-weight: bold; /* Adjust font weight as needed */
 }
 
-.list-group-item-product {
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    margin-bottom: 20px; /* Add space between product items */
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background-color: #f9f9f9;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+.menu-button {
+   margin-right: 10px; /* Adjust margin as needed */
+   color: transparent;
 }
 
-h1 {
-    font-family: '911 Porscha', sans-serif;
-    font-size: 40px;
-    color: #741b1b;
-    margin-bottom: 20px;
+.porsche-logo {
+   display: none;
+   
 }
 
-.label-product {
-    font-weight: bold;
-    margin-top: 20px;
-    margin-bottom: 5px;
+.MenuContainer {
+   display: flex;
+   justify-content: center;
+
+}
+.MenuItems {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
 }
 
-.image-product {
-    width: 20%;
-    height: auto;
-    margin-bottom: 20px;
+.MenuButtons {
+   background-color: #741b1b; /* Green */
+   border-radius: 20px;
+   border: none;
+   margin: 10px;
+   width: 150px;
 }
 
-.input-product {
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    transition: border-color 0.3s, box-shadow 0.3s;
+a.HomeLink {
+   border-radius: 30px;
+   padding: 0px; /* Adjust padding as needed */
+
 }
 
-.input-product:focus {
-    border-color: #4CAF50;
-    box-shadow: 2px 2px 5px rgba(76, 175, 80, 0.5);
-    outline: none;
+a.HomeLink:hover {
+   background-color: #b83232; /* Change color on hover */
 }
 
-.adding, .adding1 {
-    margin: 20px 0;
+a.HomeLink:active {
+   background-color: #741b1b; /* Change color on click */
 }
 
-.adding input, .adding1 input {
-    padding: 10px;
-    margin-bottom: 10px;
-    width: calc(100% - 22px);
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-family: inherit;
+
+.MenuButtons:hover {
+   background-color: #b83232; /* Change color on hover */
 }
 
-#field1, #field2, #field3, #field4 {
-    padding: 10px;
-    margin: 10px 0;
-    width: calc(100% - 22px);
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-family: inherit;
+.MenuButtons:active {
+   background-color: #741b1b; /* Change color on click */
+}
+/* make a media quesry that if screen is small it turns to logo pictutre */
+@media (max-width: 768px) {
+   .title {
+      display: none;
+   }
+
+   .porsche-logo {
+      display: block;
+      width: 40px;
+      margin: 20px;      
+   }
+
+   
+}
+
+
+.slideshow {
+   position: relative;
+   object-fit: cover;
+   width: 100%;
+   height: 100%;
+   
+}
+
+.slide {
+   position: absolute;
+   width: 100%;
+   opacity: 0;
+   transition: opacity 0.5s ease-in-out;
+}
+
+.slide.active {
+   opacity: 1;
 }
