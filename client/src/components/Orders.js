@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './Orders.css';
+import Image1 from './assets/porsche1.jpg';
 
 const OrdersComponent = () => {
     const [orders, setOrders] = useState([]);
@@ -54,7 +55,7 @@ const OrdersComponent = () => {
                                     {/* Fetch and display each product detail */}
                                     <img
                                     className="image-product"
-                                    src="https://scontent.fcai20-5.fna.fbcdn.net/v/t39.30808-6/254248292_4488945131218539_3594380631839996416_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=5f2048&_nc_ohc=XvID3PVXSnYQ7kNvgEUWv6u&_nc_ht=scontent.fcai20-5.fna&oh=00_AYA2kYf3sfJybqMcOjb_jR-Vbb6a-aIIlAwUklaHmwt7Xg&oe=664D347D"
+                                    src={Image1}
                                     alt="product image"
                                     />
                                     <ProductDetails productId={productId} />
