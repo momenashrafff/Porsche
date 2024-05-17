@@ -6,7 +6,8 @@ import Orders from "./Orders";
 
 const Home = () => {
     return (
-        <div>
+        <div className="wrapper2">
+            <div className="container2">
             <h1>Welcome to our CustomerHome Page</h1>
             <NavLink
                 to="/home/products"
@@ -21,6 +22,7 @@ const Home = () => {
             >
                 orders
             </NavLink>
+            </div>
         </div>
     );
 };

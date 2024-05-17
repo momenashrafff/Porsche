@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css?family=Raleway:400,700');
+@import url('https://fonts.cdnfonts.com/css/911-porscha');
+
+*, *:before, *:after {
+    box-sizing: border-box;
+}
+.update  {
+    margin: 20px;
+}
+
+.wrapper-product {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.container-product {
+    width: 80%;
+    max-width: 1200px;
+    text-align: center;
+    padding: 40px;
+    background: #ffffff;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.list-group-item-product {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    margin-bottom: 20px; /* Add space between product items */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    font-family: '911 Porscha', sans-serif;
+    font-size: 40px;
+    color: #741b1b;
+    margin-bottom: 20px;
+}
+
+.label-product {
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 5px;
+}
+
+.image-product {
+    width: 20%;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+.input-product {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.input-product:focus {
+    border-color: #4CAF50;
+    box-shadow: 2px 2px 5px rgba(76, 175, 80, 0.5);
+    outline: none;
+}
+
+.adding, .adding1 {
+    margin: 20px 0;
+}
+
+.adding input, .adding1 input {
+    padding: 10px;
+    margin-bottom: 10px;
+    width: calc(100% - 22px);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: inherit;
+}
+
+#field1, #field2, #field3, #field4 {
+    padding: 10px;
+    margin: 10px 0;
+    width: calc(100% - 22px);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: inherit;
+}
