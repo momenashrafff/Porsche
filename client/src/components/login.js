@@ -35,11 +35,14 @@ const Login = () => {
                 loggedd = 'customer';
                 localStorage.setItem('isAdmin', 'false');
             }
-            token = JSON.stringify(data.accessToken);
-            token=token.split('"')[1];
-            console.log(token.charAt(0));
-            localStorage.setItem('token', token);
-            console.log(token);
+            // token = JSON.stringify(data.accessToken);
+            // token=token.split('"')[1];
+            // console.log(token.charAt(0));
+
+            localStorage.setItem('token', data.accessToken);
+            // console.log(token);
+            console.log(localStorage.getItem('token'));
+            console.log(data.accessToken);
             navigate('/home');
             console.log(data);
             console.log('Login successful:', data);

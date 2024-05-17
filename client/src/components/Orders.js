@@ -66,28 +66,31 @@ const OrdersComponent = () => {
                         <button
                         onClick={() => {
                             // Send updated product data to the server
-                            fetch(`http://localhost:3000/cancelOrder/${order._id}`, {
-                                method: "DELETE",
+                            fetch(`http://localhost:3000/cancelOrder/`, {
+                                method: "POST",
                                 headers: {
                                     "Content-Type": "application/json",
-                                    Authorization: localStorage.getItem("token"),
-                                }
+                                    Authorization: localStorage.getItem("token")
+                                },
+                                body: JSON.stringify({ orderId: order._id }) // Fix: Correct placement and formatting of body
                             })
-                                .then((res) => {
-                                    if (!res.ok) {
-                                        throw new Error("Network response was not ok");
-                                    }
-                                    return res.json();
-                                })
-                                .then((data) => {
-                                    console.log("order deleted successfully:", data);
-                                    // Update state with new product data
-                                    window.location.reload();
-                                })
-                                .catch((error) => {
-                                    console.error("Error updating product:", error);
-                                });
-                        }}>Delete</button>
+                            .then((res) => {
+                                if (!res.ok) {
+                                    throw new Error("Network response was not ok");
+                                }
+                                return res.json();
+                            })
+                            .then((data) => {
+                                console.log("Order deleted successfully:", data);
+                                // Update state with new orders data
+                                window.location.reload();
+                            })
+                            .catch((error) => {
+                                console.error("Error deleting order:", error);
+                                window.location.reload();
+                            });
+                        }}
+                    >Delete</button>
 
                     </div>
                 ))}
