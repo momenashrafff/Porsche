@@ -42,6 +42,21 @@ const Register = ({ history }) => {
             // }
             const data = await response.json();
             // Handle successful response
+            if(data==="There is another account with this email"){
+                alert("There is another account with this email");
+                return;
+            }
+            if(data==="There is another account with this username"){
+                alert("There is another account with this username");
+                return;
+            }
+            if(data==="Not authorized"){
+                alert("Not authorized");
+                return;
+            }
+            if(data==="Registration Successful"){
+                alert("Registration Successful");
+            }
             console.log(data);
             // Redirect to the '/login' route
             navigate('/login')

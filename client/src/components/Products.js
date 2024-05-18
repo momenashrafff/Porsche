@@ -35,9 +35,10 @@ const Products = () => {
                 stock: stock,
             }),
         })
-            .then((res) => {
+            .then(async (res) => {
                 if (!res.ok) {
-                    throw new Error("Network response was not ok");
+                    alert(await res.json())
+                    throw new Error("")
                 }
                 return res.json();
             })
@@ -53,6 +54,10 @@ const Products = () => {
     }
     const handleSubmitSearch =  (e) => {
         e.preventDefault();
+        if(nameSearch.length===0){
+            alert('empty searrch')
+            return;
+        }
         fetch(`http://localhost:3000/findProduct`, {
             method: "POST",
             headers: {
@@ -63,13 +68,20 @@ const Products = () => {
                 name: nameSearch
             })
         })
-            .then((res) => {
+            .then(async (res) => {
                 if (!res.ok) {
-                    throw new Error("Network response was not ok");
+                    alert(await res.json())
+                    throw new Error("")
                 }
                 return res.json();
             })
             .then((data) => {
+                try {
+                    const x=data[0].name
+                }catch{
+                    alert('no such product')
+                    return
+                }
                 console.log("product:", data);
                 // Update state with new product data
                 //display the products
@@ -310,7 +322,10 @@ const Products = () => {
             <button
                 onClick={() => {
                     const idsArray = cartItems.map(product => product._id);
-
+                    if(idsArray.length===0){
+                        alert("empty karte")
+                        return
+                    }
                     fetch(`http://localhost:3000/placeOrder`, {
                         method: "POST",
                         headers: {
@@ -321,9 +336,10 @@ const Products = () => {
                             products: idsArray,
                         }),
                     })
-                        .then((res) => {
+                        .then(async (res) => {
                             if (!res.ok) {
-                                throw new Error("Network response was not ok");
+                                alert(await res.json())
+                                throw new Error("manga")
                             }
                             return res.json();
                         })
@@ -334,7 +350,7 @@ const Products = () => {
                             window.location.reload();
                         })
                         .catch((error) => {
-                            setCartItems([])
+                            // setCartItems([])
                             console.error("Error updating product:", error);
                         });
                 }}>place order</button>

@@ -9,6 +9,7 @@ import Image2 from './assets/porsche2.avif';
 import Image3 from './assets/porsche3.avif';
 const Home = () => {
     return (
+        <div className="backo">
         <div className="wrapper2">
             <div className="container2">
             <h1>Welcome to our CustomerHome Page</h1>
@@ -28,6 +29,7 @@ const Home = () => {
             </NavLink>
             }
             </div>
+        </div>
         </div>
     );
 };

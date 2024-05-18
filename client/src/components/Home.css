@@ -48,3 +48,11 @@ a:hover {
 a:active {
     background-color: #741b1b;
 }
+.backo {
+    text-align: center;
+    background-image: url('./assets/porsche1.jpg');
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+}

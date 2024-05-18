@@ -23,10 +23,11 @@ const Login = () => {
                 },
                 body: JSON.stringify(requestBody)
             });
-            if (!response.ok) {
-                throw new Error(response);
-            }
             const data = await response.json();
+            if(data==="invalid user or pass"){
+                alert("invalid user or pass")
+                return;
+            }
             // Handle successful response
             if(data.Admin) {
                 loggedd = 'admin';

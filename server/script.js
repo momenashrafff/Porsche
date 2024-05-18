@@ -54,14 +54,12 @@ app.post("/addProduct", authenticateAdmin, async (req, res) => {
             !req.body.price ||
             !req.body.stock
         ) {
-            return res.status(400).send({
-                message: "Send all required fields: name, description, price, stock"
-            });
+            return res.status(400).json("Send all required fields: name, description, price, stock");
         }
         const admin = await Admin.findById(req.user._id)
 
         if(admin == null){
-           return res.status(501).send("Not authorized")
+           return res.status(501).json("Not authorized")
         }
         const newProduct =  {
             createdBy: admin._id,
@@ -72,10 +70,10 @@ app.post("/addProduct", authenticateAdmin, async (req, res) => {
         }
         const product = await Product.create(newProduct);
 
-        return res.status(201).send(product);
+        return res.status(201).json(product);
     } catch (error) {
         console.log(error.message);
-        res.status(500).send({message: error.message})
+        res.status(500).json({message: error.message})
     }
 });
 
@@ -88,7 +86,7 @@ app.put('/editProducts/:id', authenticateAdmin, async (req, res) => {
             !req.body.price ||
             !req.body.stock
         ) {
-            return res.status(400).send({
+            return res.status(400).json({
                 message: "Send all required fields: name, description, price, stock"
             });
         }
@@ -106,7 +104,7 @@ app.put('/editProducts/:id', authenticateAdmin, async (req, res) => {
 
     } catch (error) {
         console.log(error.message);
-        res.status(500).send({message: error.message})
+        res.status(500).json({message: error.message})
     }
 });
 
@@ -124,11 +122,11 @@ app.delete('/deleteProducts/:id', authenticateAdmin, async (req, res) => {
         }
 
 
-        return res.status(200).send({ message: "Product deleted successfully"})
+        return res.status(200).json({ message: "Product deleted successfully"})
 
     } catch (error) {
         console.log(error.message);
-        res.status(500).send({message: error.message})
+        res.status(500).json({message: error.message})
     }
 });
 
@@ -144,25 +142,25 @@ app.get("/",async (request, response) => {
 //get all products
 app.get("/products", async (req, res) => {
     try{
-        res.status(200).send(await Product.find())
+        res.status(200).json(await Product.find())
     }catch(error){
 
-        res.status(404).send({message: "Product doesn't exist"})
+        res.status(404).json({message: "Product doesn't exist"})
 
     }
 })
 //get a product by id
 app.get("/product/:id", async (req, res) => {
     try{
-        res.status(200).send(await Product.findById(req.params.id))
+        res.status(200).json(await Product.findById(req.params.id))
     }catch(error){
-        res.status(404).send({message: "Product doesn't exist"})
+        res.status(404).json({message: "Product doesn't exist"})
     }
 })
 //search for a product 
 app.post("/findProduct", async (req, res) => {
     try {
-        res.status(200).send(await Product.find({"name": req.body.name}))
+        res.status(200).json(await Product.find({"name": req.body.name}))
     }catch(err){
         res.status(404).json('Product not found')
     }
@@ -175,19 +173,19 @@ app.post('/login', async (req, res) => {
     try {
       if(userCustomer == null){
           if(userAdmin == null){
-              return res.status(400).send('No such user exists')
+              return res.status(400).json('invalid user or pass')
           }else {
               if(await bcrypt.compare(req.body.password, userAdmin.password)){
                 return res.json({accessToken: jwt.sign(userAdmin.toObject(), SECRET), Admin: true})
               }else {
-                  return res.send('Wrong password')
+                  return res.status(400).json('invalid user or pass')
               }
           }
       }else {
           if(await bcrypt.compare(req.body.password, userCustomer.password)){
             return res.json({accessToken: jwt.sign(userCustomer.toObject(), SECRET), Admin: false})
           }else {
-              return res.send('Wrong password')
+              return res.status(400).json('invalid user or pass')
           }
       } 
   }
@@ -206,7 +204,7 @@ function authenticateCustomer(req, res, next){
     }
     console.log(token)
     if(token == null){
-        return res.sendStatus(401)
+        return res.jsonStatus(401)
     }
 
     jwt.verify(token, SECRET, (err, user) => {
@@ -225,11 +223,11 @@ function authenticateAdmin(req, res, next){
         token= auth;
     }
     if(token == null){
-        return res.sendStatus(401)
+        return res.jsonStatus(401)
     }
 
     jwt.verify(token, SECRET, (err, user) => {
-        if(err) return res.sendStatus(404)
+        if(err) return res.jsonStatus(404)
 
         req.user = user
         
@@ -238,7 +236,7 @@ function authenticateAdmin(req, res, next){
 }
 
 app.post('/admin', authenticateAdmin, async (req, res) => {
-    return res.status(200).send('Admin registration successful');
+    return res.status(200).json('Admin registration successful');
 })
 //Register a new user
 //email, password, username, firstName, lastName, address
@@ -305,7 +303,7 @@ app.post('/placeOrder',authenticateCustomer, async (req, res) => {
 
         await Order.create(order)
 
-        return res.status(200).send('Order placed successfully')
+        return res.status(200).json('Order placed successfully')
     }catch(err){
         return res.status(500).json(err.message)
     }
@@ -322,7 +320,7 @@ app.post('/cancelOrder',authenticateCustomer, async (req, res) => {
         const toCancel = orders.find(obj => obj.id === req.body.orderId)
         if(toCancel.status !== 'pending')
         {
-            return res.status(501).send("This order has already been shipped")
+            return res.status(501).json("This order has already been shipped")
         }
         const products = toCancel.products
         for(let item of products)
@@ -331,7 +329,7 @@ app.post('/cancelOrder',authenticateCustomer, async (req, res) => {
             await Product.findByIdAndUpdate(item, {stock: temporary.stock + 1}, {new: true})
         }
         await Order.deleteOne(toCancel)
-        return res.status(200).send('Order cancelled successfully')
+        return res.status(200).json('Order cancelled successfully')
     } catch(err) {
         return res.status(500).json(err.message)
     }
